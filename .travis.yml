@@ -1,0 +1,22 @@
+language: java
+sudo: true
+script:
+- sudo service mysql stop
+- sudo service postgresql stop
+- sudo service acpid stop
+- sudo service atd stop
+- sudo service cron stop
+- sudo service memcached stop
+- sudo service ntp stop
+- sudo service rabbitmq-server stop
+- sudo service resolvconf stop
+- sudo service sshguard stop
+- sudo service ssh stop
+- mvn clean install
+jdk:
+- openjdk8
+after_failure:
+- cat link-registry-integration/target/failsafe-reports/*.txt
+after_success:
+- if [ "$TRAVIS_BRANCH" == "master" ]; then mvn deploy --settings settings.xml -DskipTests=true
+  -B; fi
